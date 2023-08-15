@@ -2,92 +2,116 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
+ 
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class PlayerScript : MonoBehaviour
 {
     public float speed = 10;
+    
     private Rigidbody2D rigidbody;
     private BoxCollider2D boxCollider2D;
     public LayerMask layer;
+    
     public float jumpForce;
     private float jumpPressedRememberTime;
-    public float jumpHeightToCut;
-    private float horizontalInput;
-    public float maxSpeed;
- 
+  
+    private Vector2 horizontalInput;
+  
+    
+    private float isGroundedTime;
+
+    private bool isSpacePressed;
+
+    public float downWardsForce;
+
+    public float horizontalDampting;
+   
+
     private void Awake()
     {
         rigidbody = gameObject.GetComponent<Rigidbody2D>();
         boxCollider2D = transform.GetComponent<BoxCollider2D>();
+  
     }
 
     // Update is called once per frame
     void Update()
     {
         isGrounded();
-
-   
-        // if (Input.GetKeyDown(KeyCode.A))
-        // {
-        //     rightButtonPressed = 0.2f;
-        // }
-        // if (Input.GetKeyDown(KeyCode.D))
-        // {
-        //     leftButtonPressed = 0.2f;
-        // }
-      
-
-      
-        
-        jumpPressedRememberTime -= Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Space))
+        isGroundedTime -= Time.deltaTime;
+        if (isGrounded())
         {
-            jumpPressedRememberTime = 0.2f;
+            isGroundedTime = 0.25f;
         }
+        else
+        {
+            isGroundedTime = isGroundedTime;
+        }
+     
 
         if (Input.GetKeyUp(KeyCode.Space) && rigidbody.velocity.y > 0)
         {
-            rigidbody.velocity = new Vector2(rigidbody.velocity.x, rigidbody.velocity.y * jumpHeightToCut);
+            isSpacePressed = false;
         }
-    }
+        
+        jumpPressedRememberTime -= Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Space) && isGroundedTime > 0)
+        {   
+            jumpPressedRememberTime = 0.2f;
+            isSpacePressed = true;
+        }
 
+        float horizontalVelocity = rigidbody.velocity.x;
+        horizontalVelocity += Input.GetAxisRaw("Horizontal");
+       
+        
+        rigidbody.velocity = new Vector2(horizontalVelocity, rigidbody.velocity.y); 
+
+
+
+
+
+
+
+    }
+    
     private void FixedUpdate()
     {
         
+        Jump();
+
+        if (rigidbody.velocity.y > 0 && isSpacePressed == false)
+        {
+            rigidbody.velocity = new Vector2( rigidbody.velocity.x, downWardsForce) ;
+        }
+        else
+        {
+            rigidbody.velocity =  new Vector2(rigidbody.velocity.x,rigidbody.velocity.y);
+        }
         
-        if ((jumpPressedRememberTime > 0) && isGrounded())
-        {
-            rigidbody.velocity = new Vector2(rigidbody.velocity.x, jumpForce);
-        }
-
-        // if (rightButtonPressed > 0)
-        // {
-        //     rigidbody.AddForce(new Vector3(10,0,0), ForceMode2D.Impulse);
-        //
-        // }
-        //
-        // if (leftButtonPressed > 0)
-        // {
-        //     rigidbody.AddForce(new Vector3(-10, 0, 0), ForceMode2D.Impulse);
-        //     
-        // }
-
-        if (rigidbody.velocity.magnitude > maxSpeed)
-        {
-            rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, maxSpeed);
-        }
+      
+       
+       
     }
+
+     
     
+    void Jump()
+    {
+
+        if ((jumpPressedRememberTime > 0) && (isGroundedTime > 0))
+        {
+
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, jumpForce);
+            
+        }
     
-    
-    
-    
-    
-    
-    
-    
+
+    }
+
+  
     
     private bool isGrounded()
     {
@@ -98,10 +122,13 @@ public class PlayerScript : MonoBehaviour
         if (raycastHit2D.collider != null)
         {
             return true;
+           
+
         }
         else
         {
             return false;
+          
         }
     }
 }
