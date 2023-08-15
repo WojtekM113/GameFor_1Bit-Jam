@@ -18,16 +18,19 @@ public class PlayerScript : MonoBehaviour
     private float jumpPressedRememberTime;
   
     private Vector2 horizontalInput;
-  
+
+    public float linearDrag;
     
     private float isGroundedTime;
 
     private bool isSpacePressed;
 
     public float downWardsForce;
+ 
 
-    public float horizontalDampting;
-   
+    private float horizontalVelocity;
+
+    public float maxSpeed;
 
     private void Awake()
     {
@@ -63,12 +66,8 @@ public class PlayerScript : MonoBehaviour
             isSpacePressed = true;
         }
 
-        float horizontalVelocity = rigidbody.velocity.x;
-        horizontalVelocity += Input.GetAxisRaw("Horizontal");
        
-        
-        rigidbody.velocity = new Vector2(horizontalVelocity, rigidbody.velocity.y); 
-
+        horizontalVelocity = Input.GetAxisRaw("Horizontal");
 
 
 
@@ -91,21 +90,43 @@ public class PlayerScript : MonoBehaviour
             rigidbody.velocity =  new Vector2(rigidbody.velocity.x,rigidbody.velocity.y);
         }
         
+     
+        CharacterMovement(horizontalVelocity);
+        ModifyPhysics();
       
        
        
     }
 
-     
-    
+    void CharacterMovement(float PlayerInputHorizontal)
+    {
+        rigidbody.AddForce(Vector2.right * PlayerInputHorizontal * speed, ForceMode2D.Impulse);
+        
+        
+        if ((Mathf.Abs(rigidbody.velocity.x) )    > maxSpeed)
+        {
+            rigidbody.velocity = new Vector2(Mathf.Sign(rigidbody.velocity.x) * maxSpeed  , rigidbody.velocity.y);
+        }
+    }
+
+    void ModifyPhysics()
+    {
+        if (Mathf.Abs(horizontalVelocity) < 0.4f)
+        {
+            rigidbody.drag = linearDrag;
+        }
+        else
+        {
+            rigidbody.drag = 0;
+        }
+    }
+
     void Jump()
     {
 
         if ((jumpPressedRememberTime > 0) && (isGroundedTime > 0))
         {
-
             rigidbody.velocity = new Vector2(rigidbody.velocity.x, jumpForce);
-            
         }
     
 
@@ -122,13 +143,10 @@ public class PlayerScript : MonoBehaviour
         if (raycastHit2D.collider != null)
         {
             return true;
-           
-
         }
         else
         {
             return false;
-          
         }
     }
 }
