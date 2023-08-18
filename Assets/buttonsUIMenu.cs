@@ -17,12 +17,12 @@ public class buttonsUIMenu : MonoBehaviour
          
     }
 
-   public void OnStartGameClick()
+    public void OnStartGameClick()
     {
         SceneManager.LoadScene("FirstLevel");
     }
 
-   public void OnExitClick()
+     public void OnExitClick()
     {
         Application.Quit();
     }

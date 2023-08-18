@@ -29,16 +29,20 @@ public class PlayerScript : MonoBehaviour
     public float healthPoints;
 
     public Slider slider;
- 
+
+    private SpriteRenderer _spriteRenderer;
 
     private void Awake()
     {
         rigidbody = gameObject.GetComponent<Rigidbody2D>();
         boxCollider2D = transform.GetComponent<BoxCollider2D>();
 
-         
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
 
     }
+    
+    
 
     // Update is called once per frame
     void Update()
@@ -57,24 +61,9 @@ public class PlayerScript : MonoBehaviour
             isGroundedTime = isGroundedTime;
         }
 
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SceneManager.LoadScene("FirstLevel");
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            SceneManager.LoadScene("Scenes/LevelTwo");
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SceneManager.LoadScene("Scenes/LevelThree");
-        }
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            SceneManager.LoadScene("Scenes/Fourthlevel");
+            Application.Quit();
         }
 
 
@@ -90,11 +79,12 @@ public class PlayerScript : MonoBehaviour
             jumpPressedRememberTime = 0.2f;
             
         }
-
+        
        
         horizontalVelocity = Input.GetAxisRaw("Horizontal");
-        
 
+       
+         
     }
     
     private void FixedUpdate()
@@ -129,6 +119,9 @@ public class PlayerScript : MonoBehaviour
         {
             rigidbody.velocity = new Vector2(Mathf.Sign(rigidbody.velocity.x) * maxSpeed  , rigidbody.velocity.y);
         }
+        
+      
+        
     }
 
     void ModifyPhysics()
