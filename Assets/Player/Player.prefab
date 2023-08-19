@@ -59,6 +59,7 @@ MonoBehaviour:
   maxSpeed: 60
   healthPoints: 100
   slider: {fileID: 0}
+  backGroundMusic: {fileID: 0}
 --- !u!50 &4188976186228537411
 Rigidbody2D:
   serializedVersion: 4
@@ -120,7 +121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ShadowGroup: 0
   m_ComponentVersion: 1
-  m_HasRenderer: 1
+  m_HasRenderer: 0
   m_UseRendererSilhouette: 1
   m_CastsShadows: 1
   m_SelfShadows: 1
@@ -132,7 +133,7 @@ MonoBehaviour:
   - {x: -2.0194201, y: 7.279402, z: 0}
   m_ShapePathHash: -972326251
   m_Mesh: {fileID: 0}
-  m_InstanceId: -137058
+  m_InstanceId: 82900
 --- !u!95 &2101594966
 Animator:
   serializedVersion: 4

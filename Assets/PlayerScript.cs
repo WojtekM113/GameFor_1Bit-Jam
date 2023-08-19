@@ -32,13 +32,15 @@ public class PlayerScript : MonoBehaviour
 
     private SpriteRenderer _spriteRenderer;
 
+    
     private void Awake()
     {
         rigidbody = gameObject.GetComponent<Rigidbody2D>();
         boxCollider2D = transform.GetComponent<BoxCollider2D>();
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
-
+ 
+        
 
     }
     
